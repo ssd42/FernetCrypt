@@ -134,7 +134,7 @@ def decryptFile(the_file, the_key):
 
 	# Generate a token of the encryted message to be written to the file and decode it
 	token = fer.decrypt(byte_message)
-	token_string = token.decode('utf-8')
+		token_string = token.decode('utf-8')
 
 	# Removing its crypt name and returning the original
 	decrypt_name = wordInString(the_file[:-4], '_atlas') + '.txt'
