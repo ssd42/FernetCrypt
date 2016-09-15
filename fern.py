@@ -21,20 +21,13 @@ Implementations for future:
 	*Multi-Fernet -> in order to have an easy way for key rotation
 
 	*Folder-crypt -> en/decrypt an entire folder with the same key to save time
-
-
-
-
-May pass file name as a command line argument.
-Trying to write this in a pretty pythonic way
 """
 
 
-# Global vars start
-salts = b'yaya'    # has to be a byte to work with fernet
-
-
-# Global vars end
+# Global varible salt. Needs to be a byte for fernet to accept it, it is critical
+# To be the same for decryption
+# May be something simple since it can easily be seen
+salts = b'yaya'   
 
 
 
@@ -57,8 +50,19 @@ def hasher(psswrd):
 
     return code
 
+def testTime():
+	"""
+	Small function to test time it takes for hasher to run. 
+	"""
+	from datetime import datetime
+	now = datetime.now()
 
-# Uses PBKDF2HMAC to generate a salted key from the hashed password, this way guarateeing its
+	hasher('Random string')
+
+	print(now-datetime.now())
+
+
+# Uses PBKDF2HMAC to generate a salted key from the hashed password, this way guarenteeing its
 # in the fernet standards and 2^5 characters every time.
 def generateKey(key, salt):
 	kdf = PBKDF2HMAC(
