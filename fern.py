@@ -36,6 +36,16 @@ def wordInString(string, word):
 	return string.replace(word, "", 1)
 
 
+# User passes in a string to replace the default salt
+def changeSalt(newSalt):
+	global salts
+
+	# To see if some wierd values are passed as a salt (i.e. base64)
+	try:
+		salts = bytes(str(newSalt))
+	except Exception as e:
+		print(e)
+
 """
 Ok this is where it gets tricky, due to raibow tables and other methods i feel like hashing once isnt safe
 enough, the current value feels forgettible so not so sure on it either. Since there is no server side
