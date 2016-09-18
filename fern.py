@@ -21,6 +21,8 @@ Implementations for future:
 	*Multi-Fernet -> in order to have an easy way for key rotation
 
 	*Folder-crypt -> en/decrypt an entire folder with the same key to save time
+
+	*Text-line-crypt -> same thing as encryptFile but for a messge/string (for sending over a network)
 """
 
 
@@ -28,7 +30,7 @@ Implementations for future:
 # To be the same for decryption
 # May be something simple since it can easily be seen
 salts = b'yaya'   
-
+hash_amount = 150000
 
 
 
@@ -46,6 +48,21 @@ def changeSalt(newSalt):
 	except Exception as e:
 		print(e)
 
+def changeHashVal(newInt):
+	global hash_amount
+
+	if isinstance(newInt, int):
+		hash_amount  = newInt
+	else:
+		raise ValueError("{} is not a compatible integer".format(newInt))
+
+
+
+# To incororate in the multiFernet
+def rotateKey(oldKey, newKey):
+	pass
+
+
 """
 Ok this is where it gets tricky, due to raibow tables and other methods i feel like hashing once isnt safe
 enough, the current value feels forgettible so not so sure on it either. Since there is no server side
@@ -60,7 +77,7 @@ def hasher(psswrd):
 	#Crazy encoding properties the hazmat primitize objects spits out, reasearch later, also takes longer to hash than haslib about Ox^2
     #code = psswrd.encode("utf8").strip()
 
-	for _ in range(150000):
+	for _ in range(hash_amount):
 		code = sha256(code.encode('utf-8')).hexdigest()
     	
     #return code.decode("utf-8").strip()
