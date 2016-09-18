@@ -52,13 +52,20 @@ enough, the current value feels forgettible so not so sure on it either. Since t
 the amount of time it takes to calculate isnt all that bad.
 With my crappy computer it takes between      seconds so shouldn't be that bad for others
 """
+# Hazmats primitive might make this code obsolete, but the hashes are objects that dont take arguments(which Im not sure how to deal with yet)
 def hasher(psswrd):
-    code = psswrd
-    for _ in range(1500000):
+    #extra line in case of encodings being needed
+	code = psswrd
 
-        code = sha256(code.encode('utf-8')).hexdigest()
+	#Crazy encoding properties the hazmat primitize objects spits out, reasearch later, also takes longer to hash than haslib about Ox^2
+    #code = psswrd.encode("utf8").strip()
 
-    return code
+	for _ in range(150000):
+		code = sha256(code.encode('utf-8')).hexdigest()
+    	
+    #return code.decode("utf-8").strip()
+	return code
+
 
 def testTime():
 	"""
@@ -134,7 +141,7 @@ def decryptFile(the_file, the_key):
 
 	# Generate a token of the encryted message to be written to the file and decode it
 	token = fer.decrypt(byte_message)
-		token_string = token.decode('utf-8')
+	token_string = token.decode('utf-8')
 
 	# Removing its crypt name and returning the original
 	decrypt_name = wordInString(the_file[:-4], '_atlas') + '.txt'
