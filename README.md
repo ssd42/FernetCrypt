@@ -1,4 +1,5 @@
-Small python text encryption script.
+#Python text encryption script.
+
 Uses Fernet (Symmetric authenticated cryptography) which is fancy talk for uses a "secret key" to encrypt text files.
 
 Other librarys are used such as:
@@ -7,4 +8,10 @@ Other librarys are used such as:
 * Standard python libraries
 
 Simply prompts user for a key and generates the token key. After Prompts the user for the file to be encrypted and attaches a small "stamp" on it deferentiating it. 
+
+Written in a way that could be used as a library. 
+Hopes that it can be used in a pear-to-pear encryption irc client. 
+
+
+#Sample text files to show the before and after.
 
