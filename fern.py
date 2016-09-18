@@ -44,7 +44,7 @@ def changeSalt(newSalt):
 
 	# To see if some wierd values are passed as a salt (i.e. base64)
 	try:
-		salts = bytes(str(newSalt))
+		salts = bytes(str(newSalt).encode("utf-8"))
 	except Exception as e:
 		print(e)
 
@@ -56,6 +56,14 @@ def changeHashVal(newInt):
 	else:
 		raise ValueError("{} is not a compatible integer".format(newInt))
 
+
+# Basoc lookup functions.
+def currSalt():
+	print(salts)
+
+
+def currHashVal():
+	print(hash_amount)
 
 
 # To incororate in the multiFernet
@@ -93,7 +101,7 @@ def testTime():
 
 	hasher('Random string')
 
-	print(now-datetime.now())
+	print(datetime.now()-now)
 
 
 # Uses PBKDF2HMAC to generate a salted key from the hashed password, this way guarenteeing its
