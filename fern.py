@@ -57,7 +57,7 @@ def changeHashVal(newInt):
 		raise ValueError("{} is not a compatible integer".format(newInt))
 
 
-# Basoc lookup functions.
+# Basic lookup functions.
 def currSalt():
 	print(salts)
 
