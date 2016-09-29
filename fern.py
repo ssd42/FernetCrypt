@@ -30,7 +30,8 @@ Implementations for future:
 # To be the same for decryption
 # May be something simple since it can easily be seen
 salts = b'yaya'   
-hash_amount = 150000
+iterations = 50000
+# Iterations in django limits itself to 3000 while using PBk... and sha215
 
 
 
@@ -49,10 +50,10 @@ def changeSalt(newSalt):
 		print(e)
 
 def changeHashVal(newInt):
-	global hash_amount
+	global iterations
 
 	if isinstance(newInt, int):
-		hash_amount  = newInt
+		iterations  = newInt
 	else:
 		raise ValueError("{} is not a compatible integer".format(newInt))
 
@@ -63,7 +64,7 @@ def currSalt():
 
 
 def currHashVal():
-	print(hash_amount)
+	print(iterations)
 
 
 # To incororate in the multiFernet
@@ -85,7 +86,7 @@ def hasher(psswrd):
 	#Crazy encoding properties the hazmat primitize objects spits out, reasearch later, also takes longer to hash than haslib about Ox^2
     #code = psswrd.encode("utf8").strip()
 
-	for _ in range(hash_amount):
+	for _ in range(iterations):
 		code = sha256(code.encode('utf-8')).hexdigest()
     	
     #return code.decode("utf-8").strip()
