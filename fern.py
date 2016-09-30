@@ -1,5 +1,5 @@
 # Librarys need for hashing and encryption
-from cryptography.fernet import Fernet
+from cryptography.fernet import Fernet, MultiFernet
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.backends import default_backend
@@ -124,11 +124,21 @@ FEEL FREE TO REMOVE THOSE LINES OF CODE SINCE IT WILL WORK THE SAME
 """
 
 
-def encryptFile(the_file, the_key):
+def encryptFile(the_file, the_key, changeKey = None):
 	
 	# Create a fernet object and generate a 
 	# fernet compatible key using global var salts.
+
+
+
 	fer = Fernet(generateKey(the_key, salts))
+
+	"""
+	Might no work in the current function
+
+	if (changeKey):
+		fer = MultiFernet(generateKey(the_key, salts), generateKey(changeKey, salts))
+	"""
 
 	with open(the_file) as file:
 		the_message = file.read()
