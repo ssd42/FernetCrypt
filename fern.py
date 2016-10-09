@@ -17,7 +17,7 @@ FORGET.
 
 
 Implementations for future:
-	
+
 	*Multi-Fernet -> in order to have an easy way for key rotation
 
 	*Folder-crypt -> en/decrypt an entire folder with the same key to save time
@@ -30,11 +30,11 @@ Implementations for future:
 # To be the same for decryption
 # May be something simple since it can easily be seen
 salts = b'yaya'   
-iterations = 50000
+iterations = 10000
 # Iterations in django limits itself to 3000 while using PBk... and sha215
 
 
-
+# Find a way to avoid this
 def wordInString(string, word):
 	return string.replace(word, "", 1)
 
@@ -48,6 +48,7 @@ def changeSalt(newSalt):
 		salts = bytes(str(newSalt).encode("utf-8"))
 	except Exception as e:
 		print(e)
+
 
 def changeHashVal(newInt):
 	global iterations
@@ -78,6 +79,8 @@ enough, the current value feels forgettible so not so sure on it either. Since t
 the amount of time it takes to calculate isnt all that bad.
 With my crappy computer it takes between      seconds so shouldn't be that bad for others
 """
+
+# With PBKDF2HMAC this code is no longer relevant feels like overkill and waste resources
 # Hazmats primitive might make this code obsolete, but the hashes are objects that dont take arguments(which Im not sure how to deal with yet)
 def hasher(psswrd):
     #extra line in case of encodings being needed
@@ -126,19 +129,10 @@ FEEL FREE TO REMOVE THOSE LINES OF CODE SINCE IT WILL WORK THE SAME
 
 def encryptFile(the_file, the_key, changeKey = None):
 	
-	# Create a fernet object and generate a 
+	# Create a fernet object and generate a
 	# fernet compatible key using global var salts.
 
-
-
 	fer = Fernet(generateKey(the_key, salts))
-
-	"""
-	Might no work in the current function
-
-	if (changeKey):
-		fer = MultiFernet(generateKey(the_key, salts), generateKey(changeKey, salts))
-	"""
 
 	with open(the_file) as file:
 		the_message = file.read()
@@ -163,9 +157,17 @@ def encryptFile(the_file, the_key, changeKey = None):
 	except Exception as e:
 		print("Was not able to conclude due to:   {}".format(str(e)))
 
+"""
+use this ==> rather change extension to fcryp than the _atlas.txt
+seems cleaner and makes this look legit when we know im just a 4yo programmer
+
+fname = os.path.splitext(filename)[0]
+fext = os.path.splitext(filename)[1]
+
+"""
 
 def decryptFile(the_file, the_key):
-	# Create a fernet object and generate a 
+	# Create a fernet object and generate a
 	# fernet compatible key using global var salts.
 	fer = Fernet(generateKey(the_key, salts))
 
@@ -182,7 +184,7 @@ def decryptFile(the_file, the_key):
 	# Removing its crypt name and returning the original
 	decrypt_name = wordInString(the_file[:-4], '_atlas') + '.txt'
 
-	# Attempts to write the decrypted text and 
+	# Attempts to write the decrypted text and
 	try:
 		with open(decrypt_name, 'w') as afile:
 			afile.write(token_string)
@@ -191,10 +193,23 @@ def decryptFile(the_file, the_key):
 		print("Was not able to conclude due to: {}".format(str(e)))
 
 
-def main():
-	# gets the user password
-	password = hasher(getpass.getpass("Your key: "))
+# Basicly for faster encryption
+def encryptDir(directory, the_key):
+	for file_name in os.listdir(directory):
+		if file_name.endswith(".txt"):
+			encryptFile(file_name, the_key)
 
+
+# Same thing but for reverse
+def decryptDir(directory, the_key)
+	for file_name in os.listdir(directory):
+		if file_name.endswith("_atlas.txt"):
+			decryptFile(file_name, the_key)
+
+
+def main():
+	# Irrelevant but stays for now
+	password = hasher(getpass.getpass("Your key: "))
 
 	ans = input("\nWant to (e)ncrypt or (d)ecrypt file (e/d): ")
 
@@ -212,8 +227,6 @@ def main():
 	else:
 		print("An error has occured")
 
-
-# Note for me: very usefull will only execute main if this file is executed
-# If imported will not do anything
+# Hopeing to turn this into a module
 if __name__ == '__main__':
 	main()
