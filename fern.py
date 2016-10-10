@@ -201,7 +201,7 @@ def encryptDir(directory, the_key):
 
 
 # Same thing but for reverse
-def decryptDir(directory, the_key)
+def decryptDir(directory, the_key):
 	for file_name in os.listdir(directory):
 		if file_name.endswith("_atlas.txt"):
 			decryptFile(file_name, the_key)
