@@ -10,17 +10,22 @@ import os, base64, getpass
 
 
 
+
+
+
 """
 NOTE: IF YOU USE THIS AND FORGET YOUR KEY BY ANY CHANCE THERE IS LITTLE TO NO CHANCE
 THAT YOU WILL RECOVER WHAT YOU LOST MAKE SURE ITS A COMPLEX KEYPASS BUT NOTHING YOU'LL
 FORGET.
 
+TO-DO LIST
 
 Implementations for future:
+	*Fcryp Extension -> Remove te _atlas.txt and give it it's own extension
 
 	*Multi-Fernet -> in order to have an easy way for key rotation
 
-	*Folder-crypt -> en/decrypt an entire folder with the same key to save time
+	*(DONE)Folder-crypt -> en/decrypt an entire folder with the same key to save time
 
 	*Text-line-crypt -> same thing as encryptFile but for a messge/string (for sending over a network)
 """
@@ -142,6 +147,7 @@ def encryptFile(the_file, the_key, changeKey = None):
 
 	# Generate a token of the encryted message to be written to the file and decode it
 	token = fer.encrypt(byte_message)
+	# Can't I just decode this top part
 	token_string = token.decode('utf-8')
 
     # Creating name of encrypted file
