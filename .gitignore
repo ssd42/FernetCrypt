@@ -1,3 +1,4 @@
-code_snipet.txt
-storage.txt
-.idea/
+!code_snipet.txt
+!storage.txt
+*.txt
+.idea/*
