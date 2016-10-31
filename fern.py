@@ -87,17 +87,19 @@ With my crappy computer it takes between      seconds so shouldn't be that bad f
 
 # With PBKDF2HMAC this code is no longer relevant feels like overkill and waste resources
 # Hazmats primitive might make this code obsolete, but the hashes are objects that dont take arguments(which Im not sure how to deal with yet)
+
+# Might have found a use in this but still feels unsafe. Still cute though might keep.
 def hasher(psswrd):
-    #extra line in case of encodings being needed
+	#extra line in case of encodings being needed
 	code = psswrd
 
-	#Crazy encoding properties the hazmat primitize objects spits out, reasearch later, also takes longer to hash than haslib about Ox^2
-    #code = psswrd.encode("utf8").strip()
+	#Crazy encoding properties the hazmat primitize objects spits out, reasearch later, also takes longer to hash than haslib about O(x^2)
+	#code = psswrd.encode("utf8").strip()
 
 	for _ in range(iterations):
 		code = sha256(code.encode('utf-8')).hexdigest()
-    	
-    #return code.decode("utf-8").strip()
+
+	#return code.decode("utf-8").strip()
 	return code
 
 
@@ -150,16 +152,16 @@ def encryptFile(the_file, the_key, changeKey = None):
 	# Can't I just decode this top part
 	token_string = token.decode('utf-8')
 
-    # Creating name of encrypted file
-	encrypt_name = the_file[:-4] + '_atlas.txt'
+	# Creating name of encrypted file
+	encrypt_name = os.path.splitext(the_file)[0] + '.fcrypt' 
 
-    # Attemps to write the ecrypted text to a new file and delete the old one.
+	# Attemps to write the ecrypted text to a new file and delete the old one.
 	try:
 		with open(encrypt_name, 'w') as afile:
 			afile.write(token_string)
-        
+
 			os.remove(the_file)
-    
+
 	except Exception as e:
 		print("Was not able to conclude due to:   {}".format(str(e)))
 
@@ -188,7 +190,7 @@ def decryptFile(the_file, the_key):
 	token_string = token.decode('utf-8')
 
 	# Removing its crypt name and returning the original
-	decrypt_name = wordInString(the_file[:-4], '_atlas') + '.txt'
+	decrypt_name = os.path.splitext(the_file)[0] + '.txt'
 
 	# Attempts to write the decrypted text and
 	try:
@@ -201,6 +203,7 @@ def decryptFile(the_file, the_key):
 
 # Basicly for faster encryption
 def encryptDir(directory, the_key):
+	os.chdir(directory)
 	for file_name in os.listdir(directory):
 		if file_name.endswith(".txt"):
 			encryptFile(file_name, the_key)
@@ -208,8 +211,9 @@ def encryptDir(directory, the_key):
 
 # Same thing but for reverse
 def decryptDir(directory, the_key):
+	os.chdir(directory)
 	for file_name in os.listdir(directory):
-		if file_name.endswith("_atlas.txt"):
+		if file_name.endswith(".fcrypt"):
 			decryptFile(file_name, the_key)
 
 
@@ -217,7 +221,7 @@ def main():
 	# Irrelevant but stays for now
 	password = hasher(getpass.getpass("Your key: "))
 
-	ans = input("\nWant to (e)ncrypt or (d)ecrypt file (e/d): ")
+	ans = input("\nWant to (e)ncrypt or (d)ecrypt file or encrypt a dir or decrypt a dir(e/d/edir/ddir): ")
 
 	# Makes use of the functions above to either encrypt or decrypt (self explanitory delete this come on man)
 	if ans.lower() == 'e':
@@ -229,9 +233,19 @@ def main():
 		the_file = input("\nWhat is the file name: ")
 		decryptFile(the_file, password)
 		print("File was decrypted \n")
-    
+
+	elif ans.lower() == 'edir':
+		the_dir = input("\nWhat is the dir path: ")
+		encryptDir(the_dir, password)
+		print("Directory was encrypted")
+
+	elif ans.lower() == 'ddir':
+		the_dir = input("\nWhat is the dir path: ")
+		decryptDir(the_dir, password)
+		print("Directory was decrypted")
+
 	else:
-		print("An error has occured")
+		print("An error has occured: INVALID INPUT")
 
 # Hopeing to turn this into a module
 if __name__ == '__main__':

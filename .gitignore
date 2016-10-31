@@ -1,4 +1,6 @@
 !code_snipet.txt
 !storage.txt
 *.txt
+/CryptFold/*
 .idea/*
+/.idea/
