@@ -3,14 +3,9 @@ from cryptography.fernet import Fernet, MultiFernet
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.backends import default_backend
-from hashlib import sha256
+from hashlib import sha256 # this will become irrellevant with time
 
-# Used for in order of appearance: remove files from the folders, get the right size for the key, and secretly get pass
 import os, base64, getpass
-
-
-
-
 
 
 """
@@ -21,23 +16,23 @@ FORGET.
 TO-DO LIST
 
 Implementations for future:
-	*Fcryp Extension -> Remove te _atlas.txt and give it it's own extension
+	*(DONE)Fcryp Extension -> Remove te _atlas.txt and give it it's own extension
 
-	*Multi-Fernet -> in order to have an easy way for key rotation
+	*Multi-Fernet -> in order to have an easy way for key rotation (main goal for folders)
 
 	*(DONE)Folder-crypt -> en/decrypt an entire folder with the same key to save time
 
 	*Text-line-crypt -> same thing as encryptFile but for a messge/string (for sending over a network)
 """
 
+# extension for encrypted files, up to you but its this as default
+extension = '.fcrypt'
 
 # Global varible salt. Needs to be a byte for fernet to accept it, it is critical
-# To be the same for decryption
-# May be something simple since it can easily be seen
-salts = b'yaya'   
+salts = b'default_salt123'   
 iterations = 10000
 # Iterations in django limits itself to 3000 while using PBk... and sha215
-
+# Take a look into the why of this though
 
 # Find a way to avoid this
 def wordInString(string, word):
@@ -153,7 +148,7 @@ def encryptFile(the_file, the_key, changeKey = None):
 	token_string = token.decode('utf-8')
 
 	# Creating name of encrypted file
-	encrypt_name = os.path.splitext(the_file)[0] + '.fcrypt' 
+	encrypt_name = os.path.splitext(the_file)[0] + extension
 
 	# Attemps to write the ecrypted text to a new file and delete the old one.
 	try:
@@ -166,9 +161,10 @@ def encryptFile(the_file, the_key, changeKey = None):
 		print("Was not able to conclude due to:   {}".format(str(e)))
 
 """
-use this ==> rather change extension to fcryp than the _atlas.txt
-seems cleaner and makes this look legit when we know im just a 4yo programmer
+use a extension fcrypt for example instead of _atlas.txt
+seems cleaner and makes this look legit when we know im just a 2yo programmer
 
+//best was of getting the extension out
 fname = os.path.splitext(filename)[0]
 fext = os.path.splitext(filename)[1]
 
@@ -213,7 +209,7 @@ def encryptDir(directory, the_key):
 def decryptDir(directory, the_key):
 	os.chdir(directory)
 	for file_name in os.listdir(directory):
-		if file_name.endswith(".fcrypt"):
+		if file_name.endswith(extension):
 			decryptFile(file_name, the_key)
 
 
@@ -221,7 +217,7 @@ def main():
 	# Irrelevant but stays for now
 	password = hasher(getpass.getpass("Your key: "))
 
-	ans = input("\nWant to (e)ncrypt or (d)ecrypt file or encrypt a dir or decrypt a dir(e/d/edir/ddir): ")
+	ans = input("\nWant to encrypt/ decrypt file or encrypt/ decrypt a dir(e/d/edir/ddir): ")
 
 	# Makes use of the functions above to either encrypt or decrypt (self explanitory delete this come on man)
 	if ans.lower() == 'e':
