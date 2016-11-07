@@ -68,7 +68,7 @@ def currHashVal():
 	print(iterations)
 
 
-# To incororate in the multiFernet
+# To incorporate in the multiFernet
 def rotateKey(oldKey, newKey):
 	pass
 
