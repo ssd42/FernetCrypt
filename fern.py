@@ -157,9 +157,9 @@ def encryptFile(the_file, the_key, changeKey = None):
 	
 	# Create a fernet object and generate a
 	# fernet compatible key using global var salts.
-	print('Output for testing')
+	
 	fer = Fernet(generateKey(the_key, salts))
-	print(fer)
+
 
 	with open(the_file) as file:
 		the_message = file.read()
