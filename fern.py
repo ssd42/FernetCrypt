@@ -1,8 +1,9 @@
 # Librarys need for hashing and encryption
-from cryptography.fernet import Fernet, MultiFernet
+from cryptography.fernet import Fernet, MultiFernet, InvalidToken
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.backends import default_backend
+from cryptography.exceptions import InvalidSignature
 from hashlib import sha256 # this will become irrellevant with time
 
 import os, base64, getpass
@@ -127,14 +128,38 @@ def generateKey(key, salt):
 NOTE: THE NAME GENERATED FOR THE ENCRYPTED FILES IS JUST FOR THE SAKES OF TESTING IF YOU TRUELY WANT TI HIDE THEM
 FEEL FREE TO REMOVE THOSE LINES OF CODE SINCE IT WILL WORK THE SAME
 """
+# Not sure if I  should make the user pass their Fernet Obj or the key sinceit might be unsafe
+# Since it will just be saved on the program
+def encryptMessage(message, the_key):
+	"""
+	Generates the key, encodes to bytes, encrypts it and turns it back into a string
+	"""
+	fer = Fernet(generateKey(the_key, salts))
+	byte_message = bytes(message.encode("utf-8"))
+	return fer.encrypt(byte_message).decode('utf-8')	
+	
+
+def decryptMessage(message, the_key):
+	try:
+		fer = Fernet(generateKey(the_key, salts))
+		byte_message = bytes(message.encode("utf-8"))
+		return fer.decrypt(byte_message).decode('utf-8')
+
+	# In the case the user and sender have different keys it will be safetly interrupted and promt to exit
+	except (InvalidSignature, InvalidToken):
+		print('Key you inputed does not match key from sender')
+
+
+
 
 
 def encryptFile(the_file, the_key, changeKey = None):
 	
 	# Create a fernet object and generate a
 	# fernet compatible key using global var salts.
-
+	print('Output for testing')
 	fer = Fernet(generateKey(the_key, salts))
+	print(fer)
 
 	with open(the_file) as file:
 		the_message = file.read()
