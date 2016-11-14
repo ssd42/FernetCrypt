@@ -1,8 +1,9 @@
 # Librarys need for hashing and encryption
-from cryptography.fernet import Fernet, MultiFernet, InvalidToken
+from cryptography.fernet import Fernet, MultiFernet
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.backends import default_backend
+from cryptography.fernet import InvalidToken
 from cryptography.exceptions import InvalidSignature
 from hashlib import sha256 # this will become irrellevant with time
 
@@ -70,7 +71,8 @@ def currHashVal():
 
 
 # To incorporate in the multiFernet
-def rotateKey(oldKey, newKey):
+# Users provide the old key, new key, if they're rotating in a dir or filename and the dir/file's name
+def rotateKey(oldKey, newKey, method=None, name=None):
 	pass
 
 
@@ -106,7 +108,7 @@ def testTime():
 	from datetime import datetime
 	now = datetime.now()
 
-	hasher('Random string')
+	hasher('Random string tha\s long for some reason cause I will not using progession hashes')
 
 	print(datetime.now()-now)
 
@@ -140,15 +142,15 @@ def encryptMessage(message, the_key):
 	
 
 def decryptMessage(message, the_key):
+
 	try:
 		fer = Fernet(generateKey(the_key, salts))
 		byte_message = bytes(message.encode("utf-8"))
 		return fer.decrypt(byte_message).decode('utf-8')
 
-	# In the case the user and sender have different keys it will be safetly interrupted and promt to exit
 	except (InvalidSignature, InvalidToken):
-		print('Key you inputed does not match key from sender')
-
+		print('Invalid key could not decrypt\n')
+		exit(1)
 
 
 
@@ -157,9 +159,9 @@ def encryptFile(the_file, the_key, changeKey = None):
 	
 	# Create a fernet object and generate a
 	# fernet compatible key using global var salts.
-	
+	print('Output for testing')
 	fer = Fernet(generateKey(the_key, salts))
-
+	print(fer)
 
 	with open(the_file) as file:
 		the_message = file.read()
